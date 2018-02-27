@@ -10,8 +10,10 @@ def index(request):
 	return render(request, 'location/index.html', context)
 
 def search(request):
-	print '*'*40
-	print request.POST['categoryId']
-	print request.POST['Lat']
-	print request.POST['Lng']
-	print '*'*40
+	search = {
+		"category": request.POST['categoryId'],
+		"lat": request.POST['Lat'],
+		"lng": request.POST['Lng']
+	}
+	print search
+	return redirect('/activity')

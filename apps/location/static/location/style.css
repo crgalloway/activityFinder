@@ -1,0 +1,18 @@
+#startSearchDiv{
+	display: inline-block;
+	left: 45%;
+	top: 45%;
+}
+#searchDiv{
+	display: none;
+	left: 40%;
+	top: 45%;
+}
+.activity{
+	background-color: blue;
+	color: white;
+	border: 1px solid white;
+	border-radius: 15px;
+	padding: 10px;
+	position: fixed;
+}

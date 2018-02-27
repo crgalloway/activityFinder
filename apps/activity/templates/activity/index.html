@@ -2,10 +2,17 @@
 <html>
 <head>
 	<title>Activity Test Page</title>
+	{% load static %}
+	<link rel="stylesheet" type="text/css" href="{% static 'activity/style.css' %}">
 	<script src= 'http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
 	<script>
 		$(document).ready(function(){
-			$(document).ready(function(){
+			$('#beginCreationDiv').click(function(){
+				$('#beginCreationDiv').slideToggle();
+				$('#actFormDiv').slideToggle(function(){
+					if ($(this).is(':visible'))
+        			$(this).css('display','inline-block');
+				});
 				function getLocation(){
 					navigator.geolocation.getCurrentPosition(showPosition);
 				}
@@ -17,24 +24,19 @@
 				}
 				getLocation()
 			});
-			$('#beginCreationDiv').click(function(){
-				$('#beginCreationDiv').slideToggle();
-				$('#actFormDiv').slideToggle();
-			});
 			$('#activityForm').submit(function(e){
 				e.preventDefault()
 				$('#beginCreationDiv').slideToggle();
 				$('#actFormDiv').slideToggle();
-				console.log('Sending Ajax request to', $(this).attr('action'))
-        		console.log('Submitting the following data', $(this).serialize())
 				$.ajax({
 					url: $(this).attr('action'),
 					method: 'post',
 					data: $(this).serialize(),
 					success: function(serverResponse){
-						console.log('success', serverResponse)
 					}
 				})
+				document.getElementById("actLat").value = 0;
+				document.getElementById("actLng").value = 0;
 			});
 		})
 	</script>
@@ -43,26 +45,39 @@
 	</script>
 </head>
 <body>
-	<div id='beginCreationDiv' style="display: inline-block;">
-		<u>Add  new Activity</u>
+	<div class='activity' id='beginCreationDiv'>
+		<u>Let people know what you are doing</u>
 	</div>
-	<div id='actFormDiv' style="display: none">
+	<div class='activity' id='actFormDiv'>
 	<form action="/activity/register" method="post" id="activityForm">
 		{% csrf_token %}
-		Choose category of activity:
-		<select name="categoryId">
-			{% for category in categories %}
-				<option value="{{ category.id }}">{{ category.name }}</option>
-			{% endfor %}
-		</select>
-		Or add a new category:
-		<input type="text" name="newCategory">
-		description:
-		<textarea name="desc"></textarea>
+		<table>
+			<tr>
+				<td>Choose category of activity:</td>
+				<td>
+					<select name="categoryId">
+						{% for category in categories %}
+							<option value="{{ category.id }}">{{ category.name }}</option>
+						{% endfor %}
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>Or add a new Category:</td>
+				<td><input type="text" name="newCategory"></td>
+			</tr>
+			<tr>
+				<td>Description of Event:</td>
+				<td><textarea name="desc"></textarea></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td><input type="submit" id="submitButton" value="Post Activity"></td>
+			</tr>
+		</table>
 		<input type="hidden" name="actLat" id="actLat">
 		<input type="hidden" name="actLng" id="actLng">
-<!-- 		<input type="hidden" name="activeUser" value="{{ request.session.activeUser }}" -->
-		<input type="submit" id="submitButton" name="Begin Activity">
+<!-- 		<input type="hidden" name="activeUser" value="{{ request.session.activeUser }}" -->		
 	</form>
 	{% if messages %}
 		I got here

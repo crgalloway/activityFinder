@@ -1,0 +1,18 @@
+#beginCreationDiv{
+	display: inline-block;
+	left: 80%;
+	top: 80%;
+}
+#actFormDiv{
+	display: none;
+	left: 70%;
+	top: 70%;
+}
+.activity{
+	background-color: blue;
+	color: white;
+	border: 1px solid white;
+	border-radius: 15px;
+	padding: 10px;
+	position: fixed;
+}

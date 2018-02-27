@@ -2,10 +2,17 @@
 <html>
 <head>
 	<title>Location Test Page</title>
+	{% load static %}
+	<link rel="stylesheet" type="text/css" href="{% static 'location/style.css' %}">
 	<script src= 'http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
 	<script>
 		$(document).ready(function(){
-			$(document).ready(function(){
+			$('#startSearchDiv').click(function(){
+				$('#startSearchDiv').slideToggle();
+				$('#searchDiv').slideToggle(function(){
+					if ($(this).is(':visible'))
+        			$(this).css('display','inline-block');
+        		});
 				function getLocation(){
 					navigator.geolocation.getCurrentPosition(showPosition);
 				}
@@ -17,12 +24,29 @@
 				}
 				getLocation()
 			});
+			$('#searchForm').submit(function(e){
+				e.preventDefault()
+				$('#startSearchDiv').slideToggle();
+				$('#searchDiv').slideToggle();
+				$.ajax({
+					url: $(this).attr('action'),
+					method: 'post',
+					data: $(this).serialize(),
+					success: function(serverResponse){
+					}
+				})
+				document.getElementById("Lat").value = 0;
+				document.getElementById("Lng").value = 0;
+			});
 		})
 	</script>
 </head>
 <body>
-	<div>
-		<form action="/location/search" method="post">
+	<div class='activity' id="startSearchDiv">
+		<u>Look for event where you are</u>
+	</div>
+	<div class='activity' id="searchDiv">
+		<form action="/location/search" method="post" id="searchForm">
 			{% csrf_token %}
 			<input type="hidden" name="Lat" id="Lat">
 			<input type="hidden" name="Lng" id="Lng">
@@ -32,7 +56,7 @@
 					<option value="{{ category.id }}">{{ category.name }}</option>
 				{% endfor %}
 			</select>
-			<input type="submit" value="submit">
+			<input type="submit" value="Search">
 		</form>
 	</div>
 </body>
