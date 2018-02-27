@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Activity Test Page</title>
+	<script src= 'http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
+	<script>
+		$(document).ready(function(){
+			$(document).ready(function(){
+				function getLocation(){
+					navigator.geolocation.getCurrentPosition(showPosition);
+				}
+				function showPosition(position){
+					var lat = position.coords.latitude;
+					document.getElementById("actLat").value = lat;
+					var lng = position.coords.longitude;
+					document.getElementById("actLng").value = lng;
+				}
+				getLocation()
+			});
+			$('#beginCreationDiv').click(function(){
+				$('#beginCreationDiv').slideToggle();
+				$('#actFormDiv').slideToggle();
+			});
+			$('#activityForm').submit(function(e){
+				e.preventDefault()
+				$('#beginCreationDiv').slideToggle();
+				$('#actFormDiv').slideToggle();
+				console.log('Sending Ajax request to', $(this).attr('action'))
+        		console.log('Submitting the following data', $(this).serialize())
+				$.ajax({
+					url: $(this).attr('action'),
+					method: 'post',
+					data: $(this).serialize(),
+					success: function(serverResponse){
+						console.log('success', serverResponse)
+					}
+				})
+			});
+		})
+	</script>
+	<script>
+		
+	</script>
+</head>
+<body>
+	<div id='beginCreationDiv' style="display: inline-block;">
+		<u>Add  new Activity</u>
+	</div>
+	<div id='actFormDiv' style="display: none">
+	<form action="/activity/register" method="post" id="activityForm">
+		{% csrf_token %}
+		Choose category of activity:
+		<select name="categoryId">
+			{% for category in categories %}
+				<option value="{{ category.id }}">{{ category.name }}</option>
+			{% endfor %}
+		</select>
+		Or add a new category:
+		<input type="text" name="newCategory">
+		description:
+		<textarea name="desc"></textarea>
+		<input type="hidden" name="actLat" id="actLat">
+		<input type="hidden" name="actLng" id="actLng">
+<!-- 		<input type="hidden" name="activeUser" value="{{ request.session.activeUser }}" -->
+		<input type="submit" id="submitButton" name="Begin Activity">
+	</form>
+	{% if messages %}
+		I got here
+		<ul class="messages">
+			{% for message in messages %}
+				<li class="{{ message.tags }}">{{ message }}</li>
+			{% endfor %}
+		</ul>
+	{% endif %}
+	</div>
+
+</body>
+</html>
